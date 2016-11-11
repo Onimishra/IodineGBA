@@ -70,100 +70,100 @@ function registerGUIEvents() {
         IodineGUI.toMap = IodineGUI.defaults.keyZonesGBA;
         IodineGUI.toMapIndice = 0;
     });
-    addEvent("mousedown", document.getElementById("touch-a"), function () {
+    addEvent("touchstart", document.getElementById("touch-a"), function () {
         IodineGUI.Iodine.keyDown(0);
     });
-    addEvent("mouseup", document.getElementById("touch-a"), function () {
+    addEvent("touchend", document.getElementById("touch-a"), function () {
         IodineGUI.Iodine.keyUp(0);
     });
     addEvent("click", document.getElementById("key_b"), function () {
         IodineGUI.toMap = IodineGUI.defaults.keyZonesGBA;
         IodineGUI.toMapIndice = 1;
     });
-    addEvent("mousedown", document.getElementById("touch-b"), function () {
+    addEvent("touchstart", document.getElementById("touch-b"), function () {
         IodineGUI.Iodine.keyDown(1);
     });
-    addEvent("mouseup", document.getElementById("touch-b"), function () {
+    addEvent("touchend", document.getElementById("touch-b"), function () {
         IodineGUI.Iodine.keyUp(1);
     });
     addEvent("click", document.getElementById("key_select"), function () {
         IodineGUI.toMap = IodineGUI.defaults.keyZonesGBA;
         IodineGUI.toMapIndice = 2;
     });
-    addEvent("mousedown", document.getElementById("touch-select"), function () {
+    addEvent("touchstart", document.getElementById("touch-select"), function () {
         IodineGUI.Iodine.keyDown(2);
     });
-    addEvent("mouseup", document.getElementById("touch-select"), function () {
+    addEvent("touchend", document.getElementById("touch-select"), function () {
         IodineGUI.Iodine.keyUp(2);
     });
     addEvent("click", document.getElementById("key_start"), function () {
         IodineGUI.toMap = IodineGUI.defaults.keyZonesGBA;
         IodineGUI.toMapIndice = 3;
     });
-    addEvent("mousedown", document.getElementById("touch-start"), function () {
+    addEvent("touchstart", document.getElementById("touch-start"), function () {
         IodineGUI.Iodine.keyDown(3);
     });
-    addEvent("mouseup", document.getElementById("touch-start"), function () {
+    addEvent("touchend", document.getElementById("touch-start"), function () {
         IodineGUI.Iodine.keyUp(3);
     });
     addEvent("click", document.getElementById("key_right"), function () {
         IodineGUI.toMap = IodineGUI.defaults.keyZonesGBA;
         IodineGUI.toMapIndice = 4;
     });
-    addEvent("mousedown", document.getElementById("touch-right"), function () {
+    addEvent("touchstart", document.getElementById("touch-right"), function () {
         IodineGUI.Iodine.keyDown(4);
     });
-    addEvent("mouseup", document.getElementById("touch-right"), function () {
+    addEvent("touchend", document.getElementById("touch-right"), function () {
         IodineGUI.Iodine.keyUp(4);
     });
     addEvent("click", document.getElementById("key_left"), function () {
         IodineGUI.toMap = IodineGUI.defaults.keyZonesGBA;
         IodineGUI.toMapIndice = 5;
     });
-    addEvent("mousedown", document.getElementById("touch-left"), function () {
+    addEvent("touchstart", document.getElementById("touch-left"), function () {
         IodineGUI.Iodine.keyDown(5);
     });
-    addEvent("mouseup", document.getElementById("touch-left"), function () {
+    addEvent("touchend", document.getElementById("touch-left"), function () {
         IodineGUI.Iodine.keyUp(5);
     });
     addEvent("click", document.getElementById("key_up"), function () {
         IodineGUI.toMap = IodineGUI.defaults.keyZonesGBA;
         IodineGUI.toMapIndice = 6;
     });
-    addEvent("mousedown", document.getElementById("touch-up"), function () {
+    addEvent("touchstart", document.getElementById("touch-up"), function () {
         IodineGUI.Iodine.keyDown(6);
     });
-    addEvent("mouseup", document.getElementById("touch-up"), function () {
+    addEvent("touchend", document.getElementById("touch-up"), function () {
         IodineGUI.Iodine.keyUp(6);
     });
     addEvent("click", document.getElementById("key_down"), function () {
         IodineGUI.toMap = IodineGUI.defaults.keyZonesGBA;
         IodineGUI.toMapIndice = 7;
     });
-    addEvent("mousedown", document.getElementById("touch-down"), function () {
+    addEvent("touchstart", document.getElementById("touch-down"), function () {
         IodineGUI.Iodine.keyDown(7);
     });
-    addEvent("mouseup", document.getElementById("touch-down"), function () {
+    addEvent("touchend", document.getElementById("touch-down"), function () {
         IodineGUI.Iodine.keyUp(7);
     });
     addEvent("click", document.getElementById("key_r"), function () {
         IodineGUI.toMap = IodineGUI.defaults.keyZonesGBA;
         IodineGUI.toMapIndice = 8;
     });
-    addEvent("mousedown", document.getElementById("touch-r"), function () {
+    addEvent("touchstart", document.getElementById("touch-r"), function () {
         IodineGUI.Iodine.keyDown(8);
     });
-    addEvent("mouseup", document.getElementById("touch-r"), function () {
+    addEvent("touchend", document.getElementById("touch-r"), function () {
         IodineGUI.Iodine.keyUp(8);
     });
     addEvent("click", document.getElementById("key_l"), function () {
         IodineGUI.toMap = IodineGUI.defaults.keyZonesGBA;
         IodineGUI.toMapIndice = 9;
     });
-    addEvent("mousedown", document.getElementById("touch-l"), function () {
+    addEvent("touchstart", document.getElementById("touch-l"), function () {
         IodineGUI.Iodine.keyDown(9);
     });
-    addEvent("mouseup", document.getElementById("touch-l"), function () {
+    addEvent("touchend", document.getElementById("touch-l"), function () {
         IodineGUI.Iodine.keyUp(9);
     });
     addEvent("click", document.getElementById("key_volumedown"), function () {
@@ -638,10 +638,10 @@ function didNotEnter(oElement, event) {
         }
         target = target.parentElement;
     }
-	return true;
+    return true;
 }
 function isSameNode(oCheck1, oCheck2) {
-	return (typeof oCheck1.isSameNode == "function") ? oCheck1.isSameNode(oCheck2) : (oCheck1 === oCheck2);
+    return (typeof oCheck1.isSameNode == "function") ? oCheck1.isSameNode(oCheck2) : (oCheck1 === oCheck2);
 }
 function addEvent(sEvent, oElement, fListener) {
     try {
