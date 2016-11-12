@@ -10,7 +10,7 @@ html, body {
     width:100%;
     margin: 0;
     padding: 0;
-    background: #000;
+    background: #624D97;
     overflow: hidden;
     box-sizing: border-box;
     -webkit-touch-callout: none;
@@ -39,6 +39,131 @@ ul{
     left: 0px;
     right: 0px;
     bottom: 0px;
+}
+
+#full-loading {
+    height: 100%;
+    width: 100%;
+    background-color: rgba(50, 50, 50, 0.5);
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+#full-loading.show {
+    display: flex;
+    animation: show 1s;
+}
+
+#drawer {
+    width: 100%;
+    height: 145px;
+    top: -149px;
+    left: 0;
+    display: block;
+    position: fixed;
+    background-color: #383735;
+    -webkit-overflow-scrolling: touch;
+    border-bottom: 4px solid black;
+    /* border-bottom: 4px solid #FF7400; */
+    -webkit-box-shadow: 0px 3px 13px 0px rgba(50, 50, 50, 0.75);
+    -moz-box-shadow:    0px 3px 13px 0px rgba(50, 50, 50, 0.75);
+    box-shadow:         0px 3px 13px 0px rgba(50, 50, 50, 0.75);
+
+    transition: top 0.5s;
+}
+
+#drawer.open {
+    top: 0px;
+}
+
+#drawer #game-list {
+    display: flex;
+    flex-direction: row;
+    overflow-x: scroll;
+}
+
+#drawer #game-list li {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    background: url('./cart.png');
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 150px;
+    height: 95px;
+    position: relative;
+    margin: 10px 10px;
+    cursor: pointer;
+    padding: 15px 50px;
+    text-align: center;
+    font-weight: bold;
+}
+
+#drawer #options {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    width: 50px;
+    height: 100%;
+    background: black;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 2em;
+}
+
+#drawer #expander {
+    -webkit-border-radius: 0 0 400px 400px;
+    border-radius: 0 0 15px 15px;
+    background-color: black;
+    color: white;
+    width: 50px;
+    height: 20px;
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    margin-left: -25px;
+    text-align: center;
+    opacity: 0.7;
+    cursor: pointer;
+}
+
+#drawer.open #expander .fa-chevron-up {
+    display: inline;
+}
+
+#drawer #expander .fa-chevron-up {
+    display: none;
+}
+
+#drawer.open #expander .fa-chevron-down {
+    display: none;
+}
+
+#drawer #expander .fa-chevron-down {
+    display: inline;
+}
+
+#drawer.open #expander {
+    opacity: 1;
+}
+
+@keyframes show {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 /*
@@ -88,12 +213,23 @@ canvas.texturePixelated {
     color: #fff;
     bottom: 0px;
     position: fixed;
-    left: 0px;
-    display: none;
+    margin: auto;
+    width: 90%;
+    min-height: 10px;
+    left: 0;
+    right: 0;
+    // display: none;
+    opacity: 0;
     font-weight: bold;
     vertical-align: bottom;
     font-family: monospace;
     z-index: 1;
+    transition: opacity 0.8s;
+}
+
+.message.show {
+    // display: block;
+    opacity: 1;
 }
 
 /*
@@ -104,6 +240,7 @@ canvas.texturePixelated {
 
 /* top level menu */
 div#menu {
+    display: none;
     position: absolute;
     z-index: 1;
     width: 100%;
@@ -118,10 +255,6 @@ div#menu {
     border-bottom: 1px solid rgba(0,0,0,.1);
     transition: .3s ease;
 }
-
-/* auto hide menu while playing */
-.playing .menu{opacity: 0;}
-.playing .menu:hover{opacity: 0.9;}
 
 /* sub level menu */
 .menu ul{
@@ -177,28 +310,34 @@ li.hide {
  */
 
 .touch-controls{
-    display: flex;
+    display: block;
     padding: 1em;
     position: absolute;
     bottom: 0px;
     left: 0px;
     right: 0px;
+    height: 50%;
 }
 
 .touch-controls button{
-    display: inline-block;
+    display: block;
     -webkit-appearance: none;
     border:0;
     outline: 0;
     background: #fff;
     opacity: 0.7;
-    width: 3em;
-    height: 3em;
+    width: 50px;
+    height: 50px;
     line-height: 3em;
     text-align: center;
     cursor: pointer;
     transition: .1s ease;
     margin:.5em;
+    position: absolute;
+}
+
+.touch-controls button.pressed {
+    background-color: red;
 }
 
 .touch-controls button:active{
@@ -221,14 +360,14 @@ li.hide {
 }
 
 /* Only show controls on portrait mode screens */
-@media screen and (min-aspect-ratio: 1/1) {
-    .touch-controls{
+/* @media screen and (min-aspect-ratio: 1/1) { */
+    /* .touch-controls{
         display: none;
-    }
-    #main {
+    } */
+    /* #main {
         display: flex;
         justify-content: center;
         flex-grow: 1;
         align-items: center;
-    }
-}
+    } */
+/* } */

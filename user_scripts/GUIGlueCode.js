@@ -70,101 +70,41 @@ function registerGUIEvents() {
         IodineGUI.toMap = IodineGUI.defaults.keyZonesGBA;
         IodineGUI.toMapIndice = 0;
     });
-    addEvent("touchstart", document.getElementById("touch-a"), function () {
-        IodineGUI.Iodine.keyDown(0);
-    });
-    addEvent("touchend", document.getElementById("touch-a"), function () {
-        IodineGUI.Iodine.keyUp(0);
-    });
     addEvent("click", document.getElementById("key_b"), function () {
         IodineGUI.toMap = IodineGUI.defaults.keyZonesGBA;
         IodineGUI.toMapIndice = 1;
-    });
-    addEvent("touchstart", document.getElementById("touch-b"), function () {
-        IodineGUI.Iodine.keyDown(1);
-    });
-    addEvent("touchend", document.getElementById("touch-b"), function () {
-        IodineGUI.Iodine.keyUp(1);
     });
     addEvent("click", document.getElementById("key_select"), function () {
         IodineGUI.toMap = IodineGUI.defaults.keyZonesGBA;
         IodineGUI.toMapIndice = 2;
     });
-    addEvent("touchstart", document.getElementById("touch-select"), function () {
-        IodineGUI.Iodine.keyDown(2);
-    });
-    addEvent("touchend", document.getElementById("touch-select"), function () {
-        IodineGUI.Iodine.keyUp(2);
-    });
     addEvent("click", document.getElementById("key_start"), function () {
         IodineGUI.toMap = IodineGUI.defaults.keyZonesGBA;
         IodineGUI.toMapIndice = 3;
-    });
-    addEvent("touchstart", document.getElementById("touch-start"), function () {
-        IodineGUI.Iodine.keyDown(3);
-    });
-    addEvent("touchend", document.getElementById("touch-start"), function () {
-        IodineGUI.Iodine.keyUp(3);
     });
     addEvent("click", document.getElementById("key_right"), function () {
         IodineGUI.toMap = IodineGUI.defaults.keyZonesGBA;
         IodineGUI.toMapIndice = 4;
     });
-    addEvent("touchstart", document.getElementById("touch-right"), function () {
-        IodineGUI.Iodine.keyDown(4);
-    });
-    addEvent("touchend", document.getElementById("touch-right"), function () {
-        IodineGUI.Iodine.keyUp(4);
-    });
     addEvent("click", document.getElementById("key_left"), function () {
         IodineGUI.toMap = IodineGUI.defaults.keyZonesGBA;
         IodineGUI.toMapIndice = 5;
-    });
-    addEvent("touchstart", document.getElementById("touch-left"), function () {
-        IodineGUI.Iodine.keyDown(5);
-    });
-    addEvent("touchend", document.getElementById("touch-left"), function () {
-        IodineGUI.Iodine.keyUp(5);
     });
     addEvent("click", document.getElementById("key_up"), function () {
         IodineGUI.toMap = IodineGUI.defaults.keyZonesGBA;
         IodineGUI.toMapIndice = 6;
     });
-    addEvent("touchstart", document.getElementById("touch-up"), function () {
-        IodineGUI.Iodine.keyDown(6);
-    });
-    addEvent("touchend", document.getElementById("touch-up"), function () {
-        IodineGUI.Iodine.keyUp(6);
-    });
     addEvent("click", document.getElementById("key_down"), function () {
         IodineGUI.toMap = IodineGUI.defaults.keyZonesGBA;
         IodineGUI.toMapIndice = 7;
-    });
-    addEvent("touchstart", document.getElementById("touch-down"), function () {
-        IodineGUI.Iodine.keyDown(7);
-    });
-    addEvent("touchend", document.getElementById("touch-down"), function () {
-        IodineGUI.Iodine.keyUp(7);
     });
     addEvent("click", document.getElementById("key_r"), function () {
         IodineGUI.toMap = IodineGUI.defaults.keyZonesGBA;
         IodineGUI.toMapIndice = 8;
     });
-    addEvent("touchstart", document.getElementById("touch-r"), function () {
-        IodineGUI.Iodine.keyDown(8);
-    });
-    addEvent("touchend", document.getElementById("touch-r"), function () {
-        IodineGUI.Iodine.keyUp(8);
-    });
     addEvent("click", document.getElementById("key_l"), function () {
         IodineGUI.toMap = IodineGUI.defaults.keyZonesGBA;
         IodineGUI.toMapIndice = 9;
-    });
-    addEvent("touchstart", document.getElementById("touch-l"), function () {
-        IodineGUI.Iodine.keyDown(9);
-    });
-    addEvent("touchend", document.getElementById("touch-l"), function () {
-        IodineGUI.Iodine.keyUp(9);
     });
     addEvent("click", document.getElementById("key_volumedown"), function () {
         IodineGUI.toMap = IodineGUI.defaults.keyZonesControl;
@@ -536,12 +476,14 @@ function writeRedTemporaryText(textString) {
     if (IodineGUI.GUITimerID) {
         clearTimeout(IodineGUI.GUITimerID);
     }
-    document.getElementById("tempMessage").style.display = "block";
+    document.getElementById("tempMessage").className += " show";
     document.getElementById("tempMessage").textContent = textString;
     IodineGUI.GUITimerID = setTimeout(clearTempString, 5000);
 }
 function clearTempString() {
-    document.getElementById("tempMessage").style.display = "none";
+    var e = document.getElementById("tempMessage");
+    while(e.className.includes("show"))
+    e.className = e.className.slice(0, -(" show".length));
 }
 function resizeCanvasFunc() {
     var container = document.getElementById("main");

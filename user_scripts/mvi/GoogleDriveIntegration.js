@@ -22,7 +22,7 @@
     });
 	}
 
-	var listAll = function(q, callback, agg, nextPage) {
+	var listAll = function(q, callback, updateCallback, agg, nextPage) {
 	  agg = agg || [];
 
 	  var search = {
@@ -35,9 +35,10 @@
 	  var request = gapi.client.drive.files.list(search);
 	  request.execute(function(resp) {
 	  	console.log(resp);
-	    agg = agg.concat(resp.items.filter(function(value) { return value.fileExtension.endsWith("gbc") || value.fileExtension.endsWith("gba"); }));
+	  	updateCallback();
+	    agg = agg.concat(resp.items.filter(function(value) { return value.fileExtension.endsWith("gba"); }));
 	    if(resp.nextPageToken != undefined)
-	      listAll(q, callback, agg, resp.nextPageToken);
+	      listAll(q, callback, updateCallback, agg, resp.nextPageToken);
 	    else
 	      callback(agg);
 	  })
@@ -72,7 +73,6 @@
   	localforage.getItem('knownFiles')
   	.then(callback)
   	.catch(function(e) {
-			alert("An error occoured when retrieving local stored games.");
 	    console.log(e);
 	    callback([]);
 	  });
@@ -116,11 +116,11 @@
 		
 	}
 
-	GDrive.updateCache = function(callback) {
+	GDrive.updateCache = function(update, callback) {
 		auth(function() {
       listAll('mimeType="application/octet-stream"', function(files) {
       	storeFiles(files, callback);
-      });
+      }, update);
     });
 	}
 

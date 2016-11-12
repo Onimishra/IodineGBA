@@ -4,7 +4,9 @@
         <title>IodineGBA</title>
         <meta charset="UTF-8">
 		<meta name="viewport" content="width=160">
-		<meta name="viewport" content="initial-scale=1, maximum-scale=1">
+		<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
         <!--Required Scripts-->
         <script src="IodineGBA/includes/TypedArrayShim.js"></script>
         <script src="IodineGBA/core/Cartridge.js"></script>
@@ -69,6 +71,7 @@
 
         <!--Mvi scripts-->
         <script src="https://apis.google.com/js/client.js?onload=checkAuth"></script>
+        <script src="user_scripts/mvi/classListShim.js"></script>
         <script src="user_scripts/mvi/localforage.js"></script>
         <script src="user_scripts/mvi/GoogleDriveIntegration.js"></script>
         <script src="user_scripts/mvi/Setup.js"></script>
@@ -76,6 +79,39 @@
     </head>
     <body>
         <div id="container">
+            <div id="main">
+                <canvas class="canvas" id="emulator_target" width="240" height="160"></canvas>
+            </div>
+            <div class="touch-controls">
+                <button id="touch-speed" style="left: 15px; bottom: 15px">SPEED</button> 
+                <div class="touch-dpad" style="position: absolute; left: 15px; top: 50%; margin-top: -75px; height: 150px; width: 150px;">
+                    <button id="touch-up" data-input="6" data-input="4" style="left: 50%; margin-left: -25px; height: 50px; width: 50px">↑</button><br>
+                    <button id="touch-left" data-input="5" style="left: 0; top: 50%; margin-top: -25px; height: 50px; width: 50px">←</button>
+                    <button id="touch-right" data-input="4" style="right: 0; top: 50%; margin-top: -25px; height: 50px; width: 50px">→</button><br>
+                    <button id="touch-down" data-input="7" style="left: 50%; bottom: 0px; margin-left: -25px; height: 50px; width: 50px">↓</button>
+                </div>
+                <div class="touch-buttons" style="position: absolute; bottom: 5px; left: 50%; margin-left: -75px; width: 150px; height: 60px;">
+                    <button id="touch-select" data-input="2" style="left: 0">SELECT</button> 
+                    <button id="touch-start" data-input="3" style="right: 0">START</button>
+                </div>
+                <div class="touch-buttons" style="position: absolute; right: 15px; top: 50%; margin-top: -75px; height: 150px; width: 150px;">
+                    <button id="touch-a" data-input="0" style="right: 10px; top: 50%; margin-top: -40px">A</button>
+                    <button id="touch-b" data-input="1" style="left: 10px; top: 50%; margin-top: -10px">B</button><br>
+                </div>
+                <button id="touch-l" data-input="9" style="top: 0; left: 0">L</button>
+                <button id="touch-r" data-input="8" style="top: 0; right: 0">R</button>
+            </div>
+            <span class="message" id="tempMessage"></span>
+        </div>
+        <div id="full-loading"></div>
+        <div id="drawer">
+            <ul id="game-list">
+            </ul>
+            <div id="options"><i class="fa fa-cogs" aria-hidden="true"></i></div>
+            <div id="expander">
+                <i class="fa fa-chevron-down" aria-hidden="true"></i>
+                <i class="fa fa-chevron-up" aria-hidden="true"></i>
+            </div>
             <div id="menu" class="paused">
                 <ul class="menu" id="menu_top">
                     <li>
@@ -220,28 +256,6 @@
                     <li id="gdrive-files-update-games">GDrive Clear games</li>
                 </ul>
             </div>
-            <div id="main">
-                <canvas class="canvas" id="emulator_target" width="240" height="160"></canvas>
-            </div>
-            <div class="touch-controls">
-                <div class="touch-dpad">
-                    <button id="touch-up">↑</button><br>
-                    <button id="touch-left">←</button>
-                    <button id="touch-right">→</button><br>
-                    <button id="touch-down">↓</button>
-                </div>
-                <div class="touch-buttons">
-                    <button id="touch-select">SELECT</button> 
-                    <button id="touch-start">START</button>
-                </div>
-                <div class="touch-buttons">
-                    <button id="touch-a">A</button>
-                    <button id="touch-b">B</button><br>
-                    <button id="touch-l">L</button>
-                    <button id="touch-r">R</button>
-                </div>
-            </div>
-            <span class="message" id="tempMessage"></span>
         </div>
     </body>
 </html>
