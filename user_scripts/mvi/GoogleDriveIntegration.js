@@ -6,41 +6,71 @@
 	var GDrive = {};
 	var loaded = false;
 
-	var auth = function(callback) {
+	var auth = function(callback, userAccept) {
 		if(loaded) { callback(); return; }
 
 		console.log("logging in");
+		console.log(callback);
 		gapi.auth.authorize({
       'client_id': CLIENT_ID,
       'scope': SCOPES.join(' '),
-      'immediate': true
+      'immediate': (userAccept ? false : true)
     }, function(authResult) { 
     	console.log(authResult); 
+    	console.log(callback);
+    	if(authResult.error != null) {
+    		document.getElementById("gdrive-connect").classList.add("show");
+    		return;
+    	}
+    	document.getElementById("gdrive-connect").classList.remove("show");
+    	console.log("login success");
+    	console.log(callback);
     	AUTH = authResult; 
     	loaded = true; 
     	gapi.client.load('drive', 'v2', callback);
     });
 	}
 
+	window.gauth = auth;
+
 	var listAll = function(q, callback, updateCallback, agg, nextPage) {
 	  agg = agg || [];
 
 	  var search = {
-	    'maxResults': 1000,
-	    'fields': "items(downloadUrl,fileExtension,kind,mimeType,originalFilename),nextPageToken"
+	  	'folderId': 'root',
+	    'maxResults': 1000
 	  };
-	  search.q = q;
+	  search.q = "title = 'roms'"
 	  if(nextPage != undefined) search.pageToken = nextPage;
 
-	  var request = gapi.client.drive.files.list(search);
+	  var request = gapi.client.drive.children.list(search);
 	  request.execute(function(resp) {
-	  	console.log(resp);
-	  	updateCallback();
-	    agg = agg.concat(resp.items.filter(function(value) { return value.fileExtension.endsWith("gba"); }));
-	    if(resp.nextPageToken != undefined)
-	      listAll(q, callback, updateCallback, agg, resp.nextPageToken);
-	    else
-	      callback(agg);
+	  	if(resp.items.length == 0) {
+	  		alert("You do not have a folder called \"roms\" in you Google Drive");
+	  		callback([]);
+	  		return;
+	  	}
+	  	search.folderId = resp.items[0].id;
+	  	search.q = q;
+	  	gapi.client.drive.children.list(search).execute(function(sResp) {
+	  		var i = 0;
+	  		var next = function() {
+	  			gapi.client.drive.files.get({
+	  				'fileId': sResp.items[i].id,
+	    			'fields': "downloadUrl,fileExtension,kind,mimeType,originalFilename"
+	  			}).execute(function(file) {
+	  				updateCallback();
+	  				agg.push(file);
+	  				if(agg.length == sResp.items.length) {
+	  					agg = agg.filter(function(value) { return value.fileExtension.endsWith("gba"); });
+	  					callback(agg);
+	  				} else {
+	  					next(++i);
+	  				}
+	  			});
+	  		}
+	  		next(i);
+	  	});
 	  })
 	}
 
@@ -73,7 +103,6 @@
   	localforage.getItem('knownFiles')
   	.then(callback)
   	.catch(function(e) {
-	    console.log(e);
 	    callback([]);
 	  });
 	};
@@ -118,11 +147,19 @@
 
 	GDrive.updateCache = function(update, callback) {
 		auth(function() {
-      listAll('mimeType="application/octet-stream"', function(files) {
+      listAll('trashed=false and mimeType="application/octet-stream"', function(files) {
       	storeFiles(files, callback);
       }, update);
     });
 	}
+
+	GDrive.isLoggedIn = function() {
+		return AUTH != null;
+	};
+
+	GDrive.connect = function(callback) {
+		auth(callback, true);
+	};
 
 	this.GDrive = GDrive;
 })();

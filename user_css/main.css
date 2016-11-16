@@ -31,6 +31,11 @@ ul{
 #container {
     width: 100%;
     height: 100%;
+    /* touch-action: manipulation; */
+}
+
+#contianer * {
+    /* touch-action: manipulation; */
 }
 
 #main {
@@ -303,6 +308,23 @@ li.hide {
     opacity: 1;
 }
 
+#gdrive-connect {
+    display: none;
+    margin: 55px auto;
+    width: 200px;
+    text-align: center;
+    background-color: #624D97;
+    height: 2em;
+    line-height: 2em;
+    border-radius: 8px;
+    border: 2px solid #301A65;
+    color: white;
+    cursor: pointer;
+}
+#gdrive-connect.show {
+    display: block;
+}
+
 /*
 |-----------------------------------------
 | Touch Controls
@@ -319,8 +341,10 @@ li.hide {
     height: 50%;
 }
 
-.touch-controls button{
-    display: block;
+.touch-controls div.button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     -webkit-appearance: none;
     border:0;
     outline: 0;
@@ -328,35 +352,18 @@ li.hide {
     opacity: 0.7;
     width: 50px;
     height: 50px;
-    line-height: 3em;
-    text-align: center;
     cursor: pointer;
     transition: .1s ease;
-    margin:.5em;
     position: absolute;
 }
 
-.touch-controls button.pressed {
+.touch-controls .touch-buttons div.button {
+    border-radius: 100px;
+}
+
+.touch-controls div.button.pressed {
     background-color: red;
-}
-
-.touch-controls button:active{
     transform: scale(0.95);
-    box-shadow: 0 0 10px 0 rgba(0,0,0,0.4) inset;
-}
-
-.touch-dpad, .touch-buttons{
-    flex-grow: 1;
-    text-align: center;
-}
-
-.touch-buttons{
-    align-self: flex-end;
-}
-
-.touch-dpad--up{
-    flex-grow: 1;
-    width: 100%;
 }
 
 /* Only show controls on portrait mode screens */

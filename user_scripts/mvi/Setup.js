@@ -8,7 +8,7 @@ function disableZoom() {
 
   // Disable double tap
   var lastTouchEnd = 0;
-  document.body.addEventListener('touchstart', function (event) {
+  document.getElementById("container").addEventListener('touchstart', function (event) {
     var now = (new Date()).getTime();
     if (now - lastTouchEnd <= 600) {
       event.preventDefault();
@@ -32,14 +32,14 @@ function disableZoom() {
 function bindGoogleDrive() {
   // Update cache
   var updating = false;
-  document.getElementById("gdrive-files-update").addEventListener("click", function() {
+  var updateCache = function() {
     if(updating) return;
     updating = true;
     var count = 0;
 
     var loadingElem = document.getElementById("full-loading");
     loadingElem.innerHTML = count + " packages searched";
-    loadingElem.className += " show";
+    loadingElem.classList.add("show");
 
     GDrive.updateCache(function() { // Update
       count++;
@@ -47,14 +47,22 @@ function bindGoogleDrive() {
     },function(files) { // Complete
       console.log(files);
       writeRedTemporaryText("Cache upate complete");
-      loadingElem.className = loadingElem.className.slice(0, -(" show".length));
+      loadingElem.classList.remove("show");
       updating = false;
+      buildDrawer();
+    });
+  };
+
+  document.getElementById("gdrive-files-update").addEventListener("click", updateCache);
+  document.getElementById("gdrive-connect").addEventListener("click", function() {
+    GDrive.connect(function() {
+      updateCache();
     });
   });
 }
 
+var BIOS = null;
 function bindDrawer() {
-  var BIOS = null;
   var toggleDrawer = function() {
     var e = document.getElementById("expander").parentElement;
     if(e.className.includes("open"))
@@ -62,6 +70,8 @@ function bindDrawer() {
     else
       e.className += " open";
   };
+
+  setTimeout(toggleDrawer, 400);
 
   document.getElementById("expander").addEventListener("click", toggleDrawer);
   document.getElementById("game-list").addEventListener("click", function(event) {
@@ -74,9 +84,11 @@ function bindDrawer() {
 
       GDrive.download(file, function(data) {
         console.log("Rom finished");
-        attachROM(data);
-        IodineGUI.Iodine.play();
         toggleDrawer();
+        attachROM(data);
+        setTimeout(function() {
+          IodineGUI.Iodine.play();
+        }, 400);
       });
     });
   });
@@ -86,6 +98,12 @@ function bindDrawer() {
     e.style.display = e.style.display == "block" ? "none" : "block";
   });
 
+  buildDrawer();
+}
+
+function buildDrawer() {
+  var list = document.getElementById("game-list");
+  while(list.firstChild) list.removeChild(list.firstChild);
   // BUILD DRAWER
   GDrive.listFiles(function(files) {
     var e = document.getElementById("game-list");
@@ -101,13 +119,11 @@ function bindDrawer() {
 }
 
 function bindBetterVirtualControls() {
+  var lastElemTouched = new Map();
   var releaseTouch = function(t) {
     if(t == null) return;
     var elem = lastElemTouched.get(t.identifier);
     if(elem == null) return;
-    var event = document.createEvent("TouchEvent");
-    event.initUIEvent('touchend', true, true);
-    elem.dispatchEvent(event);
     elem.classList.remove("pressed");
 
     if(elem.dataset.input != null) {
@@ -139,7 +155,6 @@ function bindBetterVirtualControls() {
     }
   };
 
-  var lastElemTouched = new Map();
   document.getElementById("container").addEventListener("touchmove", pushTouch, false);
   document.getElementById("container").addEventListener("touchstart", pushTouch, false);
 
@@ -147,8 +162,9 @@ function bindBetterVirtualControls() {
     var tList = e.touches; // get list of all touches
     var t = e.changedTouches[0];
     releaseTouch(t);
+    e.preventDefault();
   }, false);
-}
+} 
 
 function setup() {
   disableZoom();
