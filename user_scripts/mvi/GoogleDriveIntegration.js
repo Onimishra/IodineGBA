@@ -7,38 +7,22 @@
 	var GDrive = {};
 	var loaded = false;
 
-	// var auth = function(callback, userAccept) {
-	// 	if(loaded) { callback(); return; }
-
-	// 	console.log("logging in");
-	// 	console.log(callback);
-	// 	var req = {
- //      'client_id': CLIENT_ID,
- //      'scope': SCOPES.join(' '),
- //      'immediate': (userAccept ? false : true)
- //    };
- //    if(AUTH != null) req.code = AUTH.code;
- //    if(userAccept) {
- //    	req.access_type = "offline";
- //    	req.response_type = "code";
- //    }
-	// 	gapi.auth.authorize(req, function(authResult) { 
- //    	console.log(authResult); 
- //    	console.log(callback);
- //    	if(authResult.error != null) {
- //    		document.getElementById("gdrive-connect").classList.add("show");
- //    		return;
- //    	}
- //    	document.getElementById("gdrive-connect").classList.remove("show");
- //    	console.log("login success");
- //    	console.log(callback);
- //    	AUTH = authResult; 
- //    	loaded = true; 
- //    	gapi.client.load('drive', 'v2', callback);
- //    });
-	// }
+	var initGapiToken = function() {
+		gapi.auth.token = function(opt, callback) {
+			var data = new URLSearchParams();
+			for (var i in opt) {
+				data.set(i, opt[i]);
+			}
+			fetch("https://www.googleapis.com/oauth2/v4/token",{
+				method: "POST",
+				body: data
+			}).then(function(d) {d.json().then(callback);});
+		};
+	};
 
 	var auth = function(callback, userAccept) {
+		if(gapi.auth.token == null) initGapiToken();
+
 		// Load token
 		var token = window.localStorage.getItem("refresh_token");
 		if(token == null && !userAccept) {
@@ -53,31 +37,25 @@
 		}
 
 		console.log("Authed - proceeding");
-		console.log(token);
 
 		// Use refresh token
 		if(loaded) { callback(); return; }
 
 		console.log("Logging in");
-		var data = new URLSearchParams();
-			data.set("refresh_token", token);
-			data.set("client_id", CLIENT_ID);
-			data.set("client_secret", CLIENT_SECRET);
-			data.set("grant_type", "refresh_token");
-			fetch("https://www.googleapis.com/oauth2/v4/token", {
-				method: "POST",
-				body: data
-			}).then(function(d) {
-				d.json().then(function(json) {
-					console.log("Logged in");
-					console.log(json);
-					AUTH = json;
-					loaded = true;
-					gapi.auth.setToken(json);
-					gapi.client.load('drive', 'v2', callback);
-					
-				});
-			});
+
+		gapi.auth.token({
+			"refresh_token": token,
+			"client_id": CLIENT_ID,
+			"client_secret": CLIENT_SECRET,
+			"grant_type": "refresh_token"
+		}, function(json) {
+			console.log("Logged in");
+			console.log(json);
+			AUTH = json;
+			loaded = true;
+			gapi.auth.setToken(json);
+			gapi.client.load('drive', 'v2', callback);			
+		});
 	}
 
 	var generateRefreshToken = function(callback) {
@@ -88,27 +66,18 @@
 			'response_type': "code",
 			'prompt': "consent"
 		}, function(auth) {
-			console.log(auth);
 
-			var data = new URLSearchParams();
-			data.set("code", auth.code);
-			data.set("client_id", CLIENT_ID);
-			data.set("client_secret", CLIENT_SECRET);
-			data.set("scope", SCOPES.join(' '));
-			// data.set("redirect_uri", "http://localhost:8887/");
-			data.set("redirect_uri", "postmessage");
-			data.set("grant_type", "authorization_code");
-			fetch("https://www.googleapis.com/oauth2/v4/token", {
-				method: "POST",
-				body: data
-			}).then(function(d) {
-				d.json().then(function(json) {
-					console.log(json);
-					if(json.refresh_token != null) window.localStorage.setItem("refresh_token", json.refresh_token);
-					if(callback != null) callback(json.refresh_token);
-				});
-			}, function(e) { // error
-				console.log(e);
+			gapi.auth.token({
+				"code": auth.code,
+				"client_id": CLIENT_ID,
+				"client_secret": CLIENT_SECRET,
+				"scope": SCOPES.join(' '),
+				"redirect_uri": "postmessage",
+				"grant_type": "authorization_code"
+			}, function(json) {
+				console.log(json);
+				if(json.refresh_token != null) window.localStorage.setItem("refresh_token", json.refresh_token);
+				if(callback != null) callback(json.refresh_token);
 			});
 			
 		})
