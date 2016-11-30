@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>IodineGBA</title>
+        <title>I53 GBA Emulator</title>
         <meta charset="UTF-8">
 		<meta name="viewport" content="width=160">
 		<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
@@ -71,13 +71,18 @@
         <script src="user_scripts/VoiceController.js"></script>
 
         <!--Mvi scripts-->
+        <script src="user_scripts/mvi/hash.js"></script>
+        <script src="user_scripts/mvi/jszip.min.js"></script>
         <script src="user_scripts/mvi/GoogleDriveIntegration.js"></script>
         <script src="user_scripts/mvi/interface.js"></script>
         <script src="user_scripts/mvi/classListShim.js"></script>
         <script src="user_scripts/mvi/localforage.js"></script>
+        <script src="user_scripts/mvi/news.js"></script>
         <script src="user_scripts/mvi/Setup.js"></script>
         <link rel="stylesheet" href="user_css/main.css">
         <link rel="stylesheet" href="user_css/gba.css">
+        <link rel="stylesheet" href="user_css/spinner.css">
+        <link rel="stylesheet" href="user_css/loading.css">
     </head>
     <body>
         <div id="container">
@@ -110,6 +115,7 @@
             <div id="gdrive-connect">Connect to Google Drive</div>
             <ul id="game-list">
             </ul>
+            <div class="meter" id="loading"><span style="width: 100%"></span></div>
             <div id="options"><i class="fa fa-cogs" aria-hidden="true"></i></div>
             <div id="expander">
                 <i class="fa fa-chevron-down" aria-hidden="true"></i>
@@ -257,6 +263,7 @@
                     <li id="gdrive-files-update">GDrive Update</li>
                     <li id="gdrive-files-load">GDrive Load</li>
                     <li id="gdrive-files-update-games">GDrive Clear games</li>
+                    <li id="gdrive-logout">GDrive Log out</li>
                 </ul>
             </div>
         </div>
@@ -439,7 +446,7 @@
                 </g>
             </svg>  
         </div>
-
+        <div id="info"></div>
         <script src="https://apis.google.com/js/client.js?onload=gauth"></script>
     </body>
 </html>

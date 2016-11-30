@@ -1,3 +1,4 @@
+'use strict';
 (function() {
 	var CLIENT_ID = '971475629778-la76i8ghv3u9h330fvlfar1nfjfo5113.apps.googleusercontent.com';
 	var CLIENT_SECRET = 'nKFdhgzNKdAEUJYPb41AzrqX';
@@ -9,13 +10,18 @@
 
 	var initGapiToken = function() {
 		gapi.auth.token = function(opt, callback) {
-			var data = new URLSearchParams();
+			var data = "";
 			for (var i in opt) {
-				data.set(i, opt[i]);
+				data += "&" + i + "=" + encodeURIComponent(opt[i]);
 			}
+			
+
 			fetch("https://www.googleapis.com/oauth2/v4/token",{
 				method: "POST",
-				body: data
+				headers: {  
+			    "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"  
+			  },
+				body: data.substring(1)
 			}).then(function(d) {d.json().then(callback);});
 		};
 	};
@@ -27,7 +33,9 @@
 		var token = window.localStorage.getItem("refresh_token");
 		if(token == null && !userAccept) {
 			console.log("Not logged in and not authed");
+			localforage.clear();
 			document.getElementById("gdrive-connect").classList.add("show");
+			if(callback != null) callback();
 			return;
 		} else if(token == null) {
 			return generateRefreshToken(function(token) { 
@@ -35,8 +43,6 @@
 				auth(callback, userAccept); 
 			});
 		}
-
-		console.log("Authed - proceeding");
 
 		// Use refresh token
 		if(loaded) { callback(); return; }
@@ -87,6 +93,7 @@
 
 	var listAll = function(q, callback, updateCallback, agg, nextPage) {
 	  agg = agg || [];
+	  if(gapi.client.drive == null) return callback(agg);
 
 	  var search = {
 	  	'folderId': 'root',
@@ -105,16 +112,21 @@
 	  	search.folderId = resp.items[0].id;
 	  	search.q = q;
 	  	gapi.client.drive.children.list(search).execute(function(sResp) {
+	  		var count = sResp.items.length;
 	  		var i = 0;
+	  		updateCallback(count, i);
+
+	  		if(count == 0) return callback(agg);
 	  		var next = function() {
 	  			gapi.client.drive.files.get({
 	  				'fileId': sResp.items[i].id,
 	    			'fields': "downloadUrl,fileExtension,kind,mimeType,originalFilename"
 	  			}).execute(function(file) {
-	  				updateCallback();
+	  				updateCallback(count, i+1);
 	  				agg.push(file);
 	  				if(agg.length == sResp.items.length) {
-	  					agg = agg.filter(function(value) { return value.fileExtension.endsWith("gba"); });
+	  					console.log(agg);
+	  					agg = agg.filter(function(value) { return value.fileExtension.endsWith("gba") || value.fileExtension.endsWith("zip"); });
 	  					callback(agg);
 	  				} else {
 	  					next(++i);
@@ -136,9 +148,9 @@
 	  });
 	}
 
-	var processDownload = function(parentObj, attachHandler) {
+	var processDownload = function(parentObj, callback) {
     try {
-        attachHandler(new Uint8Array(parentObj.response));
+        callback(new Uint8Array(parentObj.response));
     }
     catch (error) {
         var data = parentObj.responseText;
@@ -147,7 +159,7 @@
         for (var index = 0; index < length; index++) {
             dataArray[index] = data.charCodeAt(index) & 0xFF;
         }
-        attachHandler(dataArray);
+        callback(dataArray);
     }
 	};
 
@@ -161,16 +173,36 @@
 
 	GDrive.download = function(file, callback) {
 		var cache = function(res) {
-			processDownload(res.target, function(byteArr) {
-				// callback(byteArr);
-				localforage.setItem(file.originalFilename, byteArr)
-				.then(callback)
-				.catch(function(e) {
-					console.log("Unable to save byte array");
-					console.log(e);
-					callback(byteArr);
+			if(!file.fileExtension.endsWith("zip")) {
+				processDownload(res.target, function(byteArr) {
+					localforage.setItem(file.originalFilename, byteArr)
+					.then(callback)
+					.catch(function(e) {
+						console.log("Unable to save byte array");
+						console.log(e);
+						callback(byteArr);
+					});
 				});
-			});
+			} else {
+				console.log("Unzipping");
+				processDownload(res.target, function(zipByteArr) {
+					var zip = new JSZip();
+					zip.loadAsync(zipByteArr).then(function(unzipped) {
+						console.log(unzipped);
+						var fileArr = unzipped.file(/(\.|\/)(gba|rom|bin)$/i);
+						fileArr[0].async("uint8array").then(function(byteArr) {
+							console.log(byteArr);
+							localforage.setItem(file.originalFilename, byteArr)
+							.then(callback)
+							.catch(function(e) {
+								console.log("Unable to save byte array");
+								console.log(e);
+								callback(byteArr);
+							});
+						});
+					});
+				});
+			}
 		};
 
 		localforage.getItem(file.originalFilename)
@@ -197,9 +229,13 @@
 		
 	}
 
+	GDrive.clearCache = function() {
+		localforage.clear();
+	};
+
 	GDrive.updateCache = function(update, callback) {
 		auth(function() {
-      listAll('trashed=false and mimeType="application/octet-stream"', function(files) {
+      listAll('trashed=false and (mimeType="application/octet-stream" or mimeType="application/zip")', function(files) {
       	storeFiles(files, callback);
       }, update);
     });
@@ -213,5 +249,9 @@
 		auth(callback, true);
 	};
 
-	this.GDrive = GDrive;
+	GDrive.logout = function() {
+		localStorage.removeItem("refresh_token");
+	}
+
+	window.GDrive = GDrive;
 })();

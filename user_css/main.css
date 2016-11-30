@@ -325,6 +325,64 @@ li.hide {
     display: block;
 }
 
+#info {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 15px;
+    background-color: rgba(30, 30, 30, 0.8);
+    display: none;
+}
+
+#info > div {
+    margin: auto;
+    max-width: 500px;
+    border-radius: 15px;
+    background-color: rgb(30,30,30);
+    color: rgb(200, 200, 200);
+}
+
+#info ol {
+    padding: 0;
+}
+
+#info li {
+    display: none;
+}
+
+#info li.active {
+    display: block;
+}
+
+#info li div.image {
+    height: 150px;
+    border-radius: 15px 15px 0 0;
+    background-position: center;
+    background-size: cover;
+}
+
+#info li h3,
+#info div.button {
+    color: white;
+    text-align: center;
+    background: rgb(40,40,40);
+    line-height: 2em;
+    margin-top: 10px;
+}
+
+#info div.button {
+    margin-bottom: 15px;
+    cursor: pointer;
+}
+
+#info li p {
+    height: 100px;
+    overflow: scroll;
+    margin: 20px;
+}
+
 /*
 |-----------------------------------------
 | Touch Controls

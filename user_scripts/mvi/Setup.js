@@ -29,35 +29,39 @@ function disableZoom() {
   document.body.addEventListener('gestureend', prevent)
 }
 
+
+var updating = false;
+function updateCache() {
+  if(updating) return;
+  updating = true;
+  var count = 0;
+
+  loading(true);
+
+  GDrive.updateCache(function(max, current) { // Update
+    loading(true, current/max);
+  },function(files) { // Complete
+    loading(false);
+    updating = false;
+    buildDrawer();
+  });
+};
+
 function bindGoogleDrive() {
   // Update cache
-  var updating = false;
-  var updateCache = function() {
-    if(updating) return;
-    updating = true;
-    var count = 0;
-
-    var loadingElem = document.getElementById("full-loading");
-    loadingElem.innerHTML = count + " packages searched";
-    loadingElem.classList.add("show");
-
-    GDrive.updateCache(function() { // Update
-      count++;
-      loadingElem.innerHTML = count + " packages searched";
-    },function(files) { // Complete
-      console.log(files);
-      writeRedTemporaryText("Cache upate complete");
-      loadingElem.classList.remove("show");
-      updating = false;
-      buildDrawer();
-    });
-  };
-
   document.getElementById("gdrive-files-update").addEventListener("click", updateCache);
   document.getElementById("gdrive-connect").addEventListener("click", function() {
     GDrive.connect(function() {
-      updateCache();
+      updateCache(function() {}, buildDrawer);
     });
+  });
+  document.getElementById("gdrive-files-update-games").addEventListener("click", function() {
+    GDrive.clearCache();
+    buildDrawer();
+  });
+  document.getElementById("gdrive-logout").addEventListener("click", function() {
+    GDrive.logout();
+    window.location.reload();
   });
 }
 
@@ -65,19 +69,29 @@ var BIOS = null;
 function bindDrawer() {
   var toggleDrawer = function() {
     var e = document.getElementById("expander").parentElement;
-    if(e.className.includes("open"))
-      e.className = e.className.slice(0, -(" open").length);
-    else
-      e.className += " open";
+    if(e.classList.contains("open")) {
+      e.classList.remove("open");
+      IodineGUI.Iodine.play();
+    } else {
+      e.classList.add("open");
+      updateCache();
+      IodineGUI.Iodine.pause();
+    }
   };
 
-  setTimeout(toggleDrawer, 400);
+  setTimeout(function() {
+    if(IodineGUI.Iodine.emulatorStatus != 5)
+      toggleDrawer();
+  }, 800);
 
   document.getElementById("expander").addEventListener("click", toggleDrawer);
   document.getElementById("game-list").addEventListener("click", function(event) {
     if(event.target.data == null) return;
     var file = event.target.data;
 
+    localforage.setItem("lastPlayed", file);
+
+    loading(true);
     GDrive.download(BIOS, function(data) {
       console.log("Finished");
       attachBIOS(data);
@@ -86,11 +100,12 @@ function bindDrawer() {
         console.log("Rom finished");
         toggleDrawer();
         attachROM(data);
+        loading(false);
         setTimeout(function() {
           IodineGUI.Iodine.play();
         }, 400);
       });
-    });
+    });  
   });
 
   document.getElementById("options").addEventListener("click", function() {
@@ -101,6 +116,21 @@ function bindDrawer() {
   buildDrawer();
 }
 
+function loading(state, progress) {
+  var elem = document.getElementById("loading");
+  if(state)
+    elem.classList.add("visible");
+  else
+    elem.classList.remove("visible");
+
+  if(progress == null)
+    elem.classList.add("no-animation");
+  else {
+    elem.classList.remove("no-animation"); 
+    elem.childNodes[0].style.width = (100*progress) + "%";
+  }
+}
+
 function buildDrawer() {
   var list = document.getElementById("game-list");
   while(list.firstChild) list.removeChild(list.firstChild);
@@ -109,7 +139,7 @@ function buildDrawer() {
     var e = document.getElementById("game-list");
     for (var i = 0; i < files.length; i++) {
       var file = files[i];
-      if(file.originalFilename == "bios.gba") { BIOS = file; continue; }
+      if(file.originalFilename.includes("bios")) { BIOS = file; continue; }
       var li = document.createElement("li");
       li.data = file;
       li.innerHTML = file.originalFilename.slice(0, -4);
@@ -188,6 +218,31 @@ function setup() {
     IodineGUI.Iodine.setSpeed(speed);
   });
 
+  localforage.keys().then(function(keys) {
+      var biosKey = keys.filter(function(entry) { return entry.includes("bios"); });
+      if(biosKey.length == 0) return;
+      localforage.getItem("lastPlayed").then(function(gbaFile) {
+        if(gbaFile == null) return;
+        localforage.getItem(biosKey[0]).then(function(bios) {
+          if(bios == null) return;
+          attachBIOS(bios);
+          console.log("Resuming game");
+          GDrive.download(gbaFile, function(data) {
+            console.log("Rom finished");
+            attachROM(data);
+            IodineGUI.Iodine.play();
+          });
+        }); 
+    });
+  });
+
+  // news.render();  
+  var key = "news-"+news.version;
+  localforage.getItem(key).then(function(d) {
+    if(d) return;
+    news.render();  
+    localforage.setItem(key, true);
+  });
 };
 window.addEventListener("load", setup);
 
