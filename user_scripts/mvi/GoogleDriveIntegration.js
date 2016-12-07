@@ -126,7 +126,11 @@
 	  				agg.push(file);
 	  				if(agg.length == sResp.items.length) {
 	  					console.log(agg);
-	  					agg = agg.filter(function(value) { return value.fileExtension.endsWith("gba") || value.fileExtension.endsWith("zip"); });
+	  					agg = agg.filter(function(value) { 
+	  						return value.fileExtension.endsWith("gba") 
+	  						|| value.fileExtension.endsWith("zip") 
+	  						|| value.fileExtension.endsWith("bin"); 
+	  					});
 	  					callback(agg);
 	  				} else {
 	  					next(++i);
@@ -235,7 +239,7 @@
 
 	GDrive.updateCache = function(update, callback) {
 		auth(function() {
-      listAll('trashed=false and (mimeType="application/octet-stream" or mimeType="application/zip")', function(files) {
+      listAll('trashed=false and (mimeType contains "application/")', function(files) {
       	storeFiles(files, callback);
       }, update);
     });

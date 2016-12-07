@@ -49,10 +49,9 @@ function updateCache() {
 
 function bindGoogleDrive() {
   // Update cache
-  document.getElementById("gdrive-files-update").addEventListener("click", updateCache);
   document.getElementById("gdrive-connect").addEventListener("click", function() {
     GDrive.connect(function() {
-      updateCache(function() {}, buildDrawer);
+      updateCache();
     });
   });
   document.getElementById("gdrive-files-update-games").addEventListener("click", function() {
@@ -71,6 +70,7 @@ function bindDrawer() {
     var e = document.getElementById("expander").parentElement;
     if(e.classList.contains("open")) {
       e.classList.remove("open");
+      document.getElementById("menu").classList.remove("visible");
       IodineGUI.Iodine.play();
     } else {
       e.classList.add("open");
@@ -79,10 +79,10 @@ function bindDrawer() {
     }
   };
 
-  setTimeout(function() {
-    if(IodineGUI.Iodine.emulatorStatus != 5)
-      toggleDrawer();
-  }, 800);
+  // setTimeout(function() {
+  //   if(IodineGUI.Iodine.emulatorStatus != 5)
+  //     toggleDrawer();
+  // }, 800);
 
   document.getElementById("expander").addEventListener("click", toggleDrawer);
   document.getElementById("game-list").addEventListener("click", function(event) {
@@ -110,10 +110,41 @@ function bindDrawer() {
 
   document.getElementById("options").addEventListener("click", function() {
     var e = document.getElementById("menu");
-    e.style.display = e.style.display == "block" ? "none" : "block";
+    e.classList.toggle("visible");
   });
 
   buildDrawer();
+}
+
+function startGame(file) {
+  localforage.get("bios", function(bios) {
+    attachBIOS(bios);
+    GDrive.download(file, function(game) {
+      console.log("Rom finished");
+      attachROM(game);
+
+      toggleDrawer(false);
+      loading(false);
+      setTimeout(function() {
+        IodineGUI.Iodine.play();
+      }, 400);
+    });
+  });
+}
+
+function cacheBios() {
+  GDrive.listFiles(function(files) {
+    var bios = files.find(function(file) { return file.originalFilename.includes("bios"); });
+    var saveBios = function(biosData) { localforage.set("bios", biosData); };
+
+    if(!bios) {
+      if(!localforage.contains("bios")) {
+        downloadFile("IodineGBA/gba_bios.bin", function(res) { processDownload(res.target, saveBios); });
+      }
+    } else {
+      GDrive.download(bios, saveBios);
+    }
+  }); 
 }
 
 function loading(state, progress) {
@@ -211,12 +242,14 @@ function setup() {
   var speedElem = document.getElementById("touch-speed");
   var speed = 0;
   speedElem.addEventListener("touchstart", function() {
-    speed = IodineGUI.Iodine.getSpeed();
-    IodineGUI.Iodine.setSpeed(2);
+    if(speedElem.classList.contains("active")) {
+      IodineGUI.Iodine.setSpeed(speed);
+    } else {
+      speed = IodineGUI.Iodine.getSpeed();
+      IodineGUI.Iodine.setSpeed(3);
+    }
+    speedElem.classList.toggle("active");
   })
-  speedElem.addEventListener("touchend", function() {
-    IodineGUI.Iodine.setSpeed(speed);
-  });
 
   localforage.keys().then(function(keys) {
       var biosKey = keys.filter(function(entry) { return entry.includes("bios"); });
@@ -243,6 +276,14 @@ function setup() {
     news.render();  
     localforage.setItem(key, true);
   });
+
+
+  // // Called every time running state changes
+  // IodineGUI.Iodine.attachSaveExportHandler(function(arg1, arg2, arg3) {
+  //   console.log(arg1);
+  //   console.log(arg2);
+  //   console.log(arg3);
+  // });
 };
 window.addEventListener("load", setup);
 

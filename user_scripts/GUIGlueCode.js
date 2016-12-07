@@ -486,17 +486,28 @@ function clearTempString() {
     e.className = e.className.slice(0, -(" show".length));
 }
 function resizeCanvasFunc() {
-    var container = document.getElementById("main");
-    var containerHeight = container.clientHeight || container.offsetHeight || 0;
+    var container = document.getElementById("container");
     var containerWidth = container.clientWidth || container.offsetWidth || 0;
-    if (containerHeight > 0 && containerWidth > 0) {
+    var containerHeight = container.clientHeight || container.offsetHeight || 0;
+    if(containerWidth > containerHeight) {    
+        var size = containerWidth - (150 + 10 + 15)*2; // What is left in the middle without d-pad and AB
         var canvas = document.getElementById("emulator_target");
         var maxWidth = Math.floor(containerHeight * 1.5);
-        var maxHeight = Math.floor(containerWidth / 1.5);
+        var maxHeight = Math.floor(size / 1.5);
         var height = Math.min(maxHeight, containerHeight);
-        var width = Math.min(maxWidth, containerWidth);
+        var width = Math.min(maxWidth, size);
         canvas.style.width = width + "px";
         canvas.style.height = height + "px";
+    } else {
+        if (containerHeight > 0 && containerWidth > 0) {
+            var canvas = document.getElementById("emulator_target");
+            var maxWidth = Math.floor(containerHeight * 1.5);
+            var maxHeight = Math.floor(containerWidth / 1.5);
+            var height = Math.min(maxHeight, containerHeight);
+            var width = Math.min(maxWidth, containerWidth);
+            canvas.style.width = width + "px";
+            canvas.style.height = height + "px";
+        }
     }
 }
 function rebuildSavesMenu(e) {
