@@ -8,7 +8,7 @@ var news = (function() {
 		{
 			"img": "user_img/download.png",
 			"heading": "It's here!",
-			"body": "We are finally ready to let you, dear user, try out the I53 GBA emulator. As this is still the early days of this emulator in public use, feedback is very welcome!"
+			"body": "We are finally ready to let you, dear user, try out the I53 Game Boy Advance Emulator. As this is still the early days of this emulator in public use, feedback is very welcome!"
 		},
 		{
 			"img": "user_img/gdrive.png",
@@ -18,12 +18,7 @@ var news = (function() {
 		{
 			"img": "user_img/gdrive-folders.png",
 			"heading": "Games, more games!",
-			"body": "When connecting with your Google Drive, we will scan for a folder called 'roms' that should contain your games and a bios file. All GBA games must end with either a .gba or .zip extension."
-		},
-		{
-			"img": "user_img/gdrive-folders.png",
-			"heading": "¡Important!",
-			"body": "You must have a bios file in the 'roms' directory and it must be called contain the word 'bios' somewhere in it's filename."
+			"body": "When connecting with your Google Drive, we will scan for a folder called 'roms' that should contain your games. All GBA games must end with either a .gba or .zip extension."
 		},
 		{
 			"img": "user_img/Zip-File.png",

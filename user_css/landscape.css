@@ -1,0 +1,148 @@
+@media only screen 
+and (min-device-width : 300px) 
+and (max-device-width : 736px) 
+and (orientation : landscape) { 
+    html, body {
+        background: black;
+    }
+    body.fullscreen {
+        background: #624D97;
+    }
+
+    #info ol { 
+        margin-top: 5px;
+    }
+
+    #info li div.image {
+        height: 80px;
+    }
+
+    div.touch-controls {
+        height: 100%;
+        width: 100%;
+        position: absolute;
+        top: 0;
+    }
+
+    #body.fullscreen #container div.touch-controls * {
+        opacity: 0.3;
+    }
+
+    #body:not(.fullscreen) #container #main {
+        margin-top: 5%;
+        background: url("/user_img/landscape/frame-2x.png") no-repeat center;
+        background-size: contain;
+        padding: 40px 0;
+    }
+
+    #body.fullscreen .background {
+        visibility: hidden;
+    }
+
+    #main div {
+        position: relative;
+    }
+    #body:not(.fullscreen) #main div div {
+        position: absolute;
+        top: -8px;
+        left: 175px;
+        bottom: 8px;
+        right: 175px;
+        -webkit-box-shadow: inset 0px 0px 14px 1px rgba(0,0,0,0.75);
+        -moz-box-shadow: inset 0px 0px 14px 1px rgba(0,0,0,0.75);
+        box-shadow: inset 0px 0px 14px 1px rgba(0,0,0,0.75);
+    }
+
+    #body:not(.fullscreen) #emulator_target {
+        position: relative;
+        top: -8px;
+    }
+
+    .touch-controls div.button.top {
+        top: 1px;
+    }
+
+    body div.background {
+        position: absolute;
+        top: 0;
+        height: 100%;
+        width: 220px;
+        z-index: -1;
+        background-size: cover;
+    }
+
+    body div.background.left {
+        left: 0;
+        background-position: left;
+        background-image: url("/user_img/landscape/body-left-2x.png");
+        /* background: blue; */
+    }
+
+    body div.background.right {
+        right: 0;
+        background-position: right;
+        background-image: url("/user_img/landscape/body-right-2x.png");
+        /* background: green; */
+    }
+    body div.background.middle {
+        left: 215px;
+        right: 215px;
+        width: auto;
+        background-position: center;
+        background-size: contain;
+        background-image: url("/user_img/landscape/body-repeat-2x.png");
+    }
+
+    .touch-controls .touch-buttons.bottom #touch-select {
+        background-image: url('/user_img/landscape/select-bnt-2x.png');
+}
+    .touch-controls .touch-buttons.bottom #touch-start {
+        background-image: url('/user_img/landscape/start-bnt-2x.png');
+    }
+    .touch-controls .touch-dpad {
+        background-image: url('/user_img/landscape/Controller-2x.png');
+    }
+    .touch-controls #touch-speed {
+        background-image: url('/user_img/emulator/turbo-2x.png');
+    }
+    .touch-controls #touch-speed::after {
+        background-image: url('/user_img/emulator/turbo-enabled-2x.png');
+        content: ""
+    }
+    .touch-controls #touch-speed.active {
+        background-image: url('/user_img/emulator/turbo-enabled-2x.png');
+    }
+    .touch-controls #touch-l.button {
+        background-image: url('/user_img/landscape/top-left-bnt-2x.png')
+    }
+    .touch-controls #touch-r.button {
+        background-image: url('/user_img/landscape/top-right-bnt-2x.png');
+    }
+    .touch-controls .top.button.pressed {
+        top: 4px;
+    }
+    .touch-controls #touch-b {
+        background-image: url('/user_img/emulator/b-bnt-2x.png'); 
+    }
+    .touch-controls #touch-b::after {
+        background-image: url('/user_img/emulator/b-bnt-pressed-2x.png'); 
+        content: ""
+    }
+    .touch-controls #touch-b.pressed {
+        background-image: url('/user_img/emulator/b-bnt-pressed-2x.png'); 
+    }
+    .touch-controls #touch-a {
+        background-image: url('/user_img/emulator/a-bnt-2x.png'); 
+    }
+    .touch-controls #touch-a::after {
+        background-image: url('/user_img/emulator/a-bnt-pressed-2x.png'); 
+        content: ""
+    }
+    .touch-controls #touch-a.pressed {
+        background-image: url('/user_img/emulator/a-bnt-pressed-2x.png'); 
+    }
+    .touch-controls .touch-dpad::before {
+        background-image: url('/user_img/landscape/Controller-2x.png');
+    }
+        
+}

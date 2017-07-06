@@ -10,7 +10,7 @@
  */
 function GameBoyAdvanceEmulator() {
     this.settings = {
-        SKIPBoot:false,                   //Skip the BIOS boot screen.
+        SKIPBoot: false,                   //Skip the BIOS boot screen.
         audioBufferUnderrunLimit:100,     //Audio buffer minimum span amount over x milliseconds.
         audioBufferDynamicLimit:32,       //Audio buffer dynamic minimum span amount over x milliseconds.
         audioBufferSize:300,              //Audio buffer maximum span amount over x milliseconds.
@@ -321,7 +321,7 @@ GameBoyAdvanceEmulator.prototype.initializeCore = function () {
     //Wrap up any old internal instance callbacks:
     this.runTerminationJobs();
     //Setup a new instance of the i/o core:
-    this.IOCore = new GameBoyAdvanceIO(this.settings.SKIPBoot, this.coreExposed, this.BIOS, this.ROM);
+    this.IOCore = new GameBoyAdvanceIO(this.settings.SKIPBoot || true, this.coreExposed, this.BIOS, this.ROM);
     //Call the initalization procedure and get status code:
     var allowInit = this.IOCore.initialize() | 0;
     //Append status code as play status flag for emulator runtime:

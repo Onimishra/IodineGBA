@@ -83,16 +83,14 @@ ul{
     background-color: #383735;
     -webkit-overflow-scrolling: touch;
     border-bottom: 4px solid black;
-    /* border-bottom: 4px solid #FF7400; */
-    -webkit-box-shadow: 0px 3px 13px 0px rgba(50, 50, 50, 0.75);
-    -moz-box-shadow:    0px 3px 13px 0px rgba(50, 50, 50, 0.75);
-    box-shadow:         0px 3px 13px 0px rgba(50, 50, 50, 0.75);
-
-    transition: top 0.5s;
+    transition: 0.5s;
 }
 
 #drawer.open {
     top: 0px;
+    -webkit-box-shadow: 0px 3px 13px 0px rgba(50, 50, 50, 0.75);
+    -moz-box-shadow:    0px 3px 13px 0px rgba(50, 50, 50, 0.75);
+    box-shadow:         0px 3px 13px 0px rgba(50, 50, 50, 0.75);
 }
 
 #drawer #game-list {
@@ -106,7 +104,7 @@ ul{
     flex: none;
     align-items: center;
     justify-content: center;
-    background: url('./cart.png');
+    background: url('/user_img/emulator/cart.png');
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
@@ -121,17 +119,14 @@ ul{
 }
 
 #drawer #options {
-    right: 0px;
-    top: 0px;
     width: 50px;
     height: 100%;
     background: black;
     color: white;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
     cursor: pointer;
     font-size: 2em;
+    padding: 0;
+    text-align: center;
 }
 
 #drawer #expander {
@@ -140,7 +135,7 @@ ul{
     /* background-color: black; */
     /* color: white; */
     background: center no-repeat;
-    background-image: url('/user_img/emulator/eject.png');
+    background-image: url('/user_img/emulator/eject-2x.png');
     background-size: contain;
     width: 50px;
     height: 35px;
@@ -151,6 +146,16 @@ ul{
     text-align: center;
     opacity: 0.7;
     cursor: pointer;
+}
+#drawer #expander:before {
+    display: block;
+    background: center no-repeat;
+    background-image: url('/user_img/emulator/eject-2x.png');
+    background-size: contain;
+    height: 100%;
+    width: 100%;
+    opacity: inherit;
+    content: "";
 }
 
 #drawer.open #expander .fa-chevron-up {
@@ -258,29 +263,26 @@ canvas.texturePixelated {
 
 /* top level menu */
 div#menu {
-    display: none;
     z-index: 1;
     line-height: 3em;
-}
-div#menu.visible {
-    display: inline-flex;
 }
 #menu-container {
     position: absolute;
     height: 100%;
-    /* width: 100%; */
+    width: 50px;
     min-width: 25px;
     top: 0;
     right: 0;
     background-color: black;
     overflow-x: scroll;
+    transition: width 0.6s;
+}
+#menu-container.visible {
+    width: 100%;
 }
 .menu {
-    /* position: fixed; */
-    height: 100%;
-    display: inline-flex;
-    flex-wrap: wrap;
-    width: 100%;
+    float: left;
+    margin-right: -999em;
     color: white;
     background-color: black;
     border-bottom: 1px solid rgba(0,0,0,.1);
@@ -290,10 +292,16 @@ div#menu.visible {
     display: inline-block;
 }
 
+.menu > li {
+    white-space: nowrap;
+    position: relative;
+    cursor:pointer;
+    vertical-align: top;
+    line-height: 145px;
+}
+
 /* sub level menu */
-.menu ul{
-    visibility: hidden;
-    opacity: 0;
+.menu ul {
     position: absolute;
     top:100%;
     left:0;
@@ -301,6 +309,27 @@ div#menu.visible {
     box-shadow: 0 5px 10px 0 rgba(0,0,0,.1);
     transition: .3s ease;
     z-index: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+}
+
+.menu li.open ul {
+    top: 0;
+}
+
+.menu li li {
+    padding: 0;
+    background: red;
+    margin: 0;
+    line-height: initial;
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: #5B3E83;
 }
 
 li.hide {
@@ -308,13 +337,13 @@ li.hide {
 }
 
 /* bottom level nav */
-.menu ul ul{
+.menu ul ul {
     top:0;
     left: 100%;
 }
 
 #menu_top li {
-    padding: .7em 1em;
+    padding: 0em 1em;
     border-left: 1px solid #333;
 }
 
@@ -322,20 +351,22 @@ li.hide {
     padding: .3em 1em !important;
 }
 
-.menu li{
-    white-space: nowrap;
-    position: relative;
-    cursor:pointer;
+.menu li.shown {
+    display: inline-block;
 }
 
-.menu li:hover{
-    background: rgba(0,0,0,.1);
+.menu > li:first-child {
+    display: inline-block;
 }
 
 /* show sub nav on hover */
 .menu li:hover > ul{
     visibility: visible;
     opacity: 1;
+}
+
+.menu .toggle.active {
+    background-color: rgb(43,194,83);
 }
 
 #gdrive-connect {
@@ -449,7 +480,6 @@ li.hide {
 
 .touch-controls div.button.pressed {
     background-color: red;
-    transform: scale(0.95);
 }
 
 
@@ -469,21 +499,21 @@ li.hide {
 }
 .touch-controls #touch-l.button {
     left: 0;
-    background-image: url('/user_img/emulator/top-left-bnt.png')
+    /* background-image: url('/user_img/emulator/top-left-bnt.png') */
 }
 .touch-controls #touch-r.button {
     right: 0;
-    background-image: url('/user_img/emulator/top-right-bnt.png');
+    /* background-image: url('/user_img/emulator/top-right-bnt.png'); */
 }
 .touch-controls #touch-speed {
     left: 50%;
     height: 44px;
     margin-left: -10px;
     bottom: 15px;
-    background-image: url('/user_img/emulator/turbo-activated.png');
+    /* background-image: url('/user_img/emulator/turbo-2x.png'); */
 }
 .touch-controls #touch-speed.active {
-    background-image: url('/user_img/emulator/turbo.png');
+    /* background-image: url('/user_img/emulator/turbo-enabled-2x.png'); */
 }
 .touch-controls .touch-buttons.ab {
     position: absolute; 
@@ -495,27 +525,27 @@ li.hide {
 }
 .touch-controls .touch-buttons.ab div.button {
     top: 45%;
-    background-size: 70px;
+    /* background-size: 70px; */
+    background: contain;
     background-position: center 0;
+    transition: 0.05s;
 }
 .touch-controls #touch-b {
     left: 10px; 
     margin-top: -10px;
-    background-image: url('/user_img/emulator/a-bnt copy.png');
+    /* background-image: url('/user_img/emulator/b-bnt-2x.png'); */
 }
 .touch-controls #touch-b.pressed {
-    background-image: url('/user_img/emulator/b-bnt-pressed.png');
-    background-size: 60px;
+    /* background-image: url('/user_img/emulator/b-bnt-pressed-2x.png'); */
     background-position: center 4px;
 }
 .touch-controls #touch-a {
     right: 0px; 
     margin-top: -40px;
-    background-image: url('/user_img/emulator/a-bnt.png');
+    /* background-image: url('/user_img/emulator/a-bnt-2x.png'); */
 }
 .touch-controls #touch-a.pressed {
-    background-image: url('/user_img/emulator/a-bnt-pressed.png');
-    background-size: 60px;
+    /* background-image: url('/user_img/emulator/a-bnt-pressed-2x.png'); */
     background-position: center 4px;
 }
 .touch-controls .touch-buttons.bottom {
@@ -528,10 +558,10 @@ li.hide {
     position: initial;
 }
 .touch-controls .touch-buttons.bottom #touch-select {
-    background-image: url('/user_img/emulator/select-bnt.png');
+    /* background-image: url('/user_img/emulator/select-bnt.png'); */
 }
 .touch-controls .touch-buttons.bottom #touch-start {
-    background-image: url('/user_img/emulator/start-bnt.png');
+    /* background-image: url('/user_img/emulator/start-bnt.png'); */
 }
 .touch-controls .touch-dpad {
     position: absolute; 
@@ -540,7 +570,38 @@ li.hide {
     margin-top: -75px; 
     height: 150px; 
     width: 150px;
-    background-image: url('/user_img/emulator/Controller.png');
+    /* background-image: url('/user_img/emulator/Controller.png'); */
+}
+.touch-controls .touch-dpad::before {
+    height: 100%;
+    width: 100%;
+    display: block;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    content: "";
+}
+.touch-controls .touch-dpad.touch-down::before {
+    background-size: 100% 97%;
+    background-position-y: bottom;
+}
+.touch-controls .touch-dpad.touch-up::before {
+    background-size: 100% 97%;
+    background-position-y: top;
+}
+.touch-controls .touch-dpad.touch-right::before {
+    background-size: 97% 100%;
+    background-position-x: right;
+}
+.touch-controls .touch-dpad.touch-left::before {
+    background-size: 97% 100%;
+    background-position-x: left;
+}
+.touch-controls .touch-dpad.touch-down.touch-left::before,
+.touch-controls .touch-dpad.touch-down.touch-right::before,
+.touch-controls .touch-dpad.touch-up.touch-left::before,
+.touch-controls .touch-dpad.touch-up.touch-right::before {
+    background-size: 97% 97%;
 }
 .touch-controls .touch-dpad #touch-down {
     left: 50%; 
@@ -564,88 +625,27 @@ li.hide {
     width: 50px;
 }
 .touch-controls .touch-dpad #touch-up {
+    top: 0;
     left: 50%; 
     margin-left: -25px; 
     height: 50px; 
     width: 50px;
 }
 
-@media all and (orientation: landscape) { 
-    html, body {
-        background: black;
-    }
+#splash {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #624D97;
+    opacity: 1;
+    transition: 0.6s;
+}
 
-    div.touch-controls {
-        height: 100%;
-        width: 100%;
-        position: absolute;
-        top: 0;
-    }
-
-    div.touch-controls * {
-        opacity: ;
-    }
-
-    #main {
-        margin-top: 5%;
-        background: url("/user_img/emulator/frame.png") no-repeat center;
-        background-size: contain;
-        padding: 40px 0;
-    }
-
-    #main div {
-        position: relative;
-    }
-    #main div div {
-        position: absolute;
-        top: -8px;
-        left: 175px;
-        bottom: 8px;
-        right: 175px;
-        -webkit-box-shadow: inset 0px 0px 14px 1px rgba(0,0,0,0.75);
-        -moz-box-shadow: inset 0px 0px 14px 1px rgba(0,0,0,0.75);
-        box-shadow: inset 0px 0px 14px 1px rgba(0,0,0,0.75);
-    }
-
-    #emulator_target {
-        position: relative;
-        top: -8px;
-    }
-
-    .touch-controls div.button.top {
-        top: 3px;
-    }
-
-    body div.background {
-        position: absolute;
-        top: 0;
-        height: 100%;
-        width: 220px;
-        z-index: -1;
-        background-size: cover;
-    }
-
-    body div.background.left {
-        left: 0;
-        background-position: left;
-        background-image: url("/user_img/emulator/body-left.png");
-        /* background: blue; */
-    }
-
-    body div.background.right {
-        right: 0;
-        background-position: right;
-        background-image: url("/user_img/emulator/body-right.png");
-        /* background: green; */
-    }
-    body div.background.middle {
-        left: 220px;
-        right: 220px;
-        width: auto;
-        background-position: center;
-        background-size: contain;
-        background-image: url("/user_img/emulator/body-repeat.png");
-    }
+#splash.invisible {
+    opacity: 0;
+    visibility: hidden;
 }
 
 

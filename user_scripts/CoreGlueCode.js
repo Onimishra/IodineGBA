@@ -100,10 +100,12 @@ function registerIodineHandler() {
             throw null;
         }
         else if (!IodineGUI.defaults.toggleOffthreadCPU) {
+            console.log("Running with gfx off-thread");
             //Try starting Iodine normally, but initialize offthread gfx:
             IodineGUI.Iodine = new IodineGBAWorkerGfxShim();
         }
         else {
+            console.log("Running in worker");
             //Try starting Iodine in a webworker:
             IodineGUI.Iodine = new IodineGBAWorkerShim();
             //In order for save on page unload, this needs to be done:
@@ -111,6 +113,7 @@ function registerIodineHandler() {
         }
     }
     catch (e) {
+        console.log("Running on-thread");
         //Otherwise just run on-thread:
         IodineGUI.Iodine = new GameBoyAdvanceEmulator();
     }

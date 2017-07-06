@@ -1,0 +1,33 @@
+CACHE MANIFEST
+
+# I53 cache manifest
+# version 0.1.1
+
+user_img/emulator/a-bnt-2x.png
+user_img/emulator/a-bnt-pressed-2x.png
+user_img/emulator/b-bnt-2x.png
+user_img/emulator/b-bnt-pressed-2x.png
+user_img/emulator/turbo-2x.png
+user_img/emulator/turbo-enabled-2x.png
+user_img/emulator/eject-2x.png
+user_img/emulator/cart.png
+
+user_img/landscape/body-left-2x.png
+user_img/landscape/body-right-2x.png
+user_img/landscape/body-repeat-2x.png
+user_img/landscape/Controller-2x.png
+user_img/landscape/frame-2x.png
+user_img/landscape/select-bnt-2x.png
+user_img/landscape/start-bnt-2x.png
+user_img/landscape/top-left-bnt-2x.png
+user_img/landscape/top-right-bnt-2x.png
+
+user_img/download.png
+user_img/gdrive-folders.png
+user_img/gdrive.png
+user_img/Zip-File.png
+
+favicon.ico
+favicon-16x16.png
+favicon-32x32.png
+apple-touch-icon.png

@@ -418,7 +418,7 @@ function updatePlayButton(isPlaying) {
     if ((isPlaying | 0) == 1) {
         document.getElementById("play").className = "hide";
         document.getElementById("pause").className = "show";
-        document.getElementById("menu").className = "playing";
+        // document.getElementById("menu").className = "playing";
         if (!IodineGUI.coreTimerID) {
             initTimer();
         }
@@ -427,7 +427,7 @@ function updatePlayButton(isPlaying) {
     else {
         document.getElementById("pause").className = "hide";
         document.getElementById("play").className = "show";
-        document.getElementById("menu").className = "paused";
+        // document.getElementById("menu").className = "paused";
         if (IodineGUI.coreTimerID) {
             clearInterval(IodineGUI.coreTimerID);
             IodineGUI.coreTimerID = null;
@@ -490,7 +490,7 @@ function resizeCanvasFunc() {
     var containerWidth = container.clientWidth || container.offsetWidth || 0;
     var containerHeight = container.clientHeight || container.offsetHeight || 0;
     if(containerWidth > containerHeight) {    
-        var size = containerWidth - (150 + 10 + 15)*2; // What is left in the middle without d-pad and AB
+        var size = containerWidth - (!document.getElementById("body").classList.contains("fullscreen") ? ((150 + 10 + 15)*2) : 0); // What is left in the middle without d-pad and AB
         var canvas = document.getElementById("emulator_target");
         var maxWidth = Math.floor(containerHeight * 1.5);
         var maxHeight = Math.floor(size / 1.5);
