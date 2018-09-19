@@ -344,6 +344,7 @@ function setup() {
       console.log("disabling audio");
       IodineGUI.Iodine.disableAudio();
   }
+  IodineGUI.Iodine.disableAudio();
 
   var speedElem = document.getElementById("touch-speed");
   var speed = 0;
@@ -384,6 +385,11 @@ function setup() {
   //   console.log(arg2);
   //   console.log(arg3);
   // });
+
+  var speedContainer = document.getElementById("speed-percentage");
+  IodineGUI.Iodine.attachSpeedHandler(function(e) {
+    speedContainer.innerHTML = Math.round(e * 100) / 100;
+  });
 };
 window.addEventListener("load", setup);
 
@@ -511,6 +517,16 @@ window.addEventListener("keydown", function(e) {
         console.log("No state");
       }
     });
+  }
+});
+
+window.addEventListener("beforeunload", function() {
+  var t = +(new Date().getTime()) - IodineGUI.startTime;
+  console.log(t);
+  if(t > 5000) {
+    saveState();
+  } else {
+    console.log("No state saved");
   }
 });
 

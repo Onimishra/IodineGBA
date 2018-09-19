@@ -37,7 +37,10 @@ GameBoyAdvanceGraphics.prototype.addClocks = function (clocks) {
     clocks = clocks | 0;
     //Call this when clocking the state some more:
     this.LCDTicks = ((this.LCDTicks | 0) + (clocks | 0)) | 0;
-    this.clockLCDState();
+
+    while((this.LCDTicks | 0) >= 1232) {
+        this.clockLCDState();
+    }
 }
 GameBoyAdvanceGraphics.prototype.clockLCDState = function () {
     if ((this.LCDTicks | 0) >= 960) {
@@ -97,7 +100,7 @@ GameBoyAdvanceGraphics.prototype.clockLCDNextLine = function () {
     this.checkVCounter();                                           //We're on a new scan line, so check the VCounter for match.
     this.isRenderingCheckPreprocess();                              //Update a check value.
     //Recursive clocking of the LCD state:
-    this.clockLCDState();
+    // this.clockLCDState();
 }
 GameBoyAdvanceGraphics.prototype.updateHBlank = function () {
     if ((this.statusFlags & 0x2) == 0) {                            //If we were last in HBlank, don't run this again.

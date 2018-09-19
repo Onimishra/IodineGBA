@@ -133,6 +133,13 @@ function initTimer() {
     IodineGUI.coreTimerID = setInterval(function () {
         IodineGUI.Iodine.timerCallback(((+(new Date()).getTime()) - (+IodineGUI.startTime)) >>> 0);
     }, IodineGUI.defaults.timerRate | 0);
+
+    // var runner = function(t) {
+    //     IodineGUI.Iodine.timerCallback((t - (+IodineGUI.startTime)) >>> 0);
+    //     IodineGUI.coreTimerID = window.requestAnimationFrame(runner);
+    // };
+
+    // IodineGUI.coreTimerID = window.requestAnimationFrame(runner);
 }
 function registerBlitterHandler() {
     IodineGUI.Blitter = new GfxGlueCode(240, 160);
